@@ -190,6 +190,27 @@
                 alert('Commit no encontrado');
             }
         }
+
+        let scaleFactor = 1; // Factor de escala inicial
+        let aument=10
+        function updateCommitSpacing() {
+            const commits = document.querySelectorAll('.commit');
+            commits.forEach(commit => {
+                //commit.style.transform = `scale(${scaleFactor})`; // Aplica la escala a cada commit
+                commit.style.margin = `0 ${scaleFactor}px`;
+            });
+        }
+
+        window.addEventListener('keydown', (event) => {
+                if (event.key === '=') {
+                    scaleFactor += aument; // Aumentar el factor de escala
+                    updateCommitSpacing(); // Llama a la función para aplicar el nuevo espaciado
+                } else if (event.key === '-') {
+                    scaleFactor = Math.max(0, scaleFactor - aument); // Disminuir el factor de escala
+                    updateCommitSpacing(); // Llama a la función para aplicar el nuevo espaciado
+                }
+            
+        });
    </script>
    <script>
         const tooltip2 = document.getElementById('tooltip-2');
