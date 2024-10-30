@@ -1,0 +1,29 @@
+<!-- Recent Projects Section -->
+<div class="recent-projects">
+    <h2>Recent Projects</h2>
+    <div class="project-list">
+
+        <!-- we will show all the Projects in the folder -->
+        {% for folder in folders %}
+            <form action="open_project" method="post" id="form-{{ loop.index }}">
+                <div class="project-item" onclick="send_form('form-{{ loop.index }}')">
+                    <img src="https://via.placeholder.com/50" alt="Project Icon">
+                    <div class="project-info">
+                        <h3>{{folder.name}}</h3>
+                        <p>{{ folder.creation_time }}</p>
+                        <p>{{ folder.path }}</p>
+                    </div>
+                </div>
+
+                <!-- this is the path of the folder of the folder-->
+                <input type="hidden" value="{{ folder.path }}" name="folder_path">
+            </form>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function send_form(formId){
+        document.getElementById(formId).submit();
+    }
+</script>

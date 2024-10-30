@@ -1,0 +1,97 @@
+.diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    overflow: auto;
+    height: 100vh;
+}
+
+.branch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.branch-title {
+    padding: 5px 10px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.commit {
+    width: 15px;
+    height: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    display: none;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.connection{
+    z-index: -10000;
+}
+
+/**/
+.information-commit {
+    background-color: #12191F;
+    width: 100%;
+    height: 100vh;
+    color: white;
+    align-items: center;
+    text-align: center;
+}
+
+.img-autor {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.date {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: .7rem;
+}
+
+.message{
+    font-size: .8rem;
+}
+
+
+.tooltip-2 {
+    font-size: .7rem;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    display: none; /* Ocultamos el tooltip inicialmente */
+    z-index: 1000; /* Aseguramos que esté por encima de otros elementos */
+}
+
+.btn-commits {
+    background-color: transparent; /* O puedes usar un color específico, como 'white' o '#f0f0f0' */
+    border: 1px solid #1B1F29; /* Opcional: Añade un borde */
+    border-radius: 5px; /* Valor para redondear los bordes */
+    padding: 10px 15px; /* Opcional: Añade espacio dentro del botón */
+    cursor: pointer; /* Cambia el cursor a pointer al pasar sobre el botón */
+    transition: background-color 0.3s ease; /* Opcional: Añade una transición suave para el color de fondo */
+    color: #898E98;
+}
+
+.btn-commits:hover {
+    background-color: #1A242F; /* Cambia el color de fondo al pasar el ratón */
+}

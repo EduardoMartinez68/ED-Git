@@ -1,0 +1,156 @@
+/* General Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main Container */
+.container {
+    width: 90%;
+    max-width: 900px;
+    background-color: #12191F;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Header */
+.header {
+    padding: 20px;
+    border-radius: 10px;
+    color: #2AE8C9;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.header h1 {
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 1em;
+    color: #bbb;
+}
+
+.header .close-option {
+    color: #bbb;
+    font-size: 0.85em;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transition: color 0.3s;
+}
+
+.header .close-option:hover {
+    color: #21c4a9;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+}
+
+.button {
+    background-color: #0D1017;
+    color: #2AE8C9;
+    padding: 12px 24px;
+    border: 2px solid #2AE8C9;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: #26c5ab;
+    color: #1a1a1a;
+    transform: scale(1.05);
+}
+
+/* Recent Projects */
+.recent-projects {
+    margin-top: 30px;
+}
+
+.recent-projects h2 {
+    font-size: 1.5em;
+    color: #2AE8C9;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #0D1017;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid #2AE8C9;
+}
+
+.project-item:hover {
+    background-color: #181e2b;
+    transform: translateX(5px);
+}
+
+.project-item img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-info h3 {
+    font-size: 1.1em;
+    margin: 0;
+    color: #e0e0e0;
+}
+
+.project-info p {
+    font-size: 0.9em;
+    margin: 4px 0 0;
+    color: #b0b0b0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .button-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .button {
+        width: 100%;
+        text-align: center;
+    }
+}

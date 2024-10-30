@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Árbol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tree.css') }}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-chubby/css/uicons-solid-chubby.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-straight/css/uicons-bold-straight.css'>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col">
+            <div id="diagram" class="diagram"></div>
+            <div id="tooltip" class="tooltip"></div> <!-- Tooltip para los mensajes -->
+        </div>
+        <div class="col-2">
+            <div class="information-commit">
+                <br><br>
+                <img src="https://img.freepik.com/premium-vector/cute-astronaut-working-as-programmer_332004-204.jpg"
+                    alt="" class="img-autor">
+                <br>
+                <label for="" class="date" id="commitDate">0000-00-00</label>
+                <h3 class="author" id="commitAuthor">Author</h3>
+                <h5 class="nameBranch" id="branchName">Branch Name</h5>
+                <label for="" class="message" id="message">Commit</label>
+                <hr>
+                <div class="row">
+                    <div class="col" style="padding-left: .5rem;">
+                        <button class="tooltip-button btn-commits" data-tooltip="Crea una nueva rama"><i class="fi fi-ss-code-branch"></i></button>
+                    </div>
+                    <div class="col">
+                        <button class="tooltip-button btn-commits" data-tooltip="Crea y guarda un nuevo commit"><i class="fi fi-ss-code-commit"></i></button>
+                    </div>
+                    <div class="col">
+                        <button class="tooltip-button btn-commits" data-tooltip="Convina 2 commits"><i class="fi fi-bs-code-compare"></i></button>
+                    </div>
+                    <div class="col">
+                        <button class="tooltip-button btn-commits" data-tooltip="Clona un commit"><i class="fi fi-bs-code-commit"></i></button>
+                    </div>
+                    <div class="col">
+                        <button class="tooltip-button btn-commits" data-tooltip="Descarga el proyecto"><i class="fi fi-ss-down-to-line"></i></button>
+                    </div>
+                </div>
+                <div id="tooltip-2" class="tooltip-2"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="{{ url_for('static', filename='js/tree.js') }}"></script>
+    <script>
+        let commits = [];
+        document.addEventListener("DOMContentLoaded", () => {
+                const dataGitFolder = {{ dataGitFolder | tojson}};
+
+                const branches = dataGitFolder.branches.map(branch => ({
+                    name: branch.toUpperCase(),
+                    color: getBranchColor(branch)
+                }));
+
+                
+                for (const branchName in dataGitFolder.commits) {
+                    dataGitFolder.commits[branchName].forEach(commit => {
+                        commits.push({
+                            id: commit.hash,
+                            branch: branchName.toUpperCase(),
+                            message: commit.message,
+                            author: commit.author,
+                            date: commit.date
+                        });
+                    });
+                }
+
+                renderDiagram(branches, commits);
+        });
+
+        function getBranchColor(branchName) {
+            const colors = {
+                'MAIN': '#FF6B6B',
+                'MASTER': '#FF6B6B',
+                'HOT': '#4C6EF5',
+                'RELEASE': '#FF79C6',
+                'DEVELOP': '#FFD166',
+                'FEATURE': '#06D6A0'
+            };
+            return colors[branchName.toUpperCase()] || '#AAAAAA';
+        }
+
+        function renderDiagram(branches, commits) {
+            const diagramContainer = document.getElementById('diagram');
+            const tooltip = document.getElementById('tooltip');
+
+            branches.forEach(branch => {
+                const branchContainer = document.createElement('div');
+                branchContainer.classList.add('branch');
+                branchContainer.dataset.branch = branch.name;
+
+                const branchTitle = document.createElement('div');
+                branchTitle.classList.add('branch-title');
+                branchTitle.style.backgroundColor = branch.color;
+                branchTitle.textContent = branch.name;
+                branchContainer.appendChild(branchTitle);
+
+                const branchCommits = commits.filter(commit => commit.branch === branch.name);
+
+                // Almacenar los elementos de commit para usarlos después en la conexión
+                const commitElements = [];
+
+                branchCommits.forEach(commit => {
+                    const commitElement = document.createElement('div');
+                    commitElement.classList.add('commit');
+                    commitElement.id = commit.id;
+                    commitElement.dataset.message = commit.message;
+
+                    // Event listeners para mostrar el tooltip
+                    commitElement.addEventListener('mouseenter', (e) => {
+                        tooltip.textContent = commit.message;
+                        tooltip.style.display = 'block';
+                        commitElement.style.cursor = 'pointer'; // Cambiar el cursor a pointer
+                    });
+
+                    commitElement.addEventListener('mousemove', (e) => {
+                        tooltip.style.left = e.pageX + 10 + 'px';
+                        tooltip.style.top = e.pageY + 10 + 'px';
+                    });
+
+                    commitElement.addEventListener('mouseleave', () => {
+                        tooltip.style.display = 'none';
+                    });
+
+                    // Evento de clic para llamar a la función updateDataInTheScreen
+                    commitElement.addEventListener('click', () => {
+                        updateDataInTheScreen(commit.id); // Llamar a la función con el ID del commit
+                    });
+
+                    branchContainer.appendChild(commitElement);
+                    commitElements.push(commitElement); // Agregar el commit a la lista
+                });
+
+                diagramContainer.appendChild(branchContainer);
+
+                // Conectar los commits de esta rama después de haberlos agregado al DOM
+                for (let i = 0; i < commitElements.length - 1; i++) {
+                    connectCommits(commitElements[i], commitElements[i + 1]);
+                }
+            });
+        }
+
+
+        function connectCommits(commitA, commitB) {
+            const svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svgContainer.setAttribute("class", "connection");
+            svgContainer.style.position = "absolute";
+            svgContainer.style.top = "0";
+            svgContainer.style.left = "0";
+            svgContainer.style.width = "100%";
+            svgContainer.style.height = "100%";
+            document.body.appendChild(svgContainer);
+
+            const rectA = commitA.getBoundingClientRect();
+            const rectB = commitB.getBoundingClientRect();
+
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", rectA.x + rectA.width / 2);
+            line.setAttribute("y1", rectA.y + rectA.height / 2);
+            line.setAttribute("x2", rectB.x + rectB.width / 2);
+            line.setAttribute("y2", rectB.y + rectB.height / 2);
+            line.setAttribute("stroke", "#ccc");
+            line.setAttribute("stroke-width", "2");
+
+            svgContainer.appendChild(line);
+        }
+   
+        function updateDataInTheScreen(commitId){
+            // Buscar el commit en el array usando el ID proporcionado
+            const commit = commits.find(c => c.id === commitId);
+            console.log(commit.branch)
+            if (commit) {
+                document.getElementById('commitDate').innerText  = new Date(commit.date).toISOString().slice(0, 10);;
+                document.getElementById('branchName').innerText =commit.branch;
+                document.getElementById('message').innerText =commit.message;
+                document.getElementById('commitAuthor').innerText =commit.author;
+            } else {
+                alert('Commit no encontrado');
+            }
+        }
+   </script>
+   <script>
+        const tooltip2 = document.getElementById('tooltip-2');
+
+        document.querySelectorAll('.tooltip-button').forEach(button => {
+            button.addEventListener('mouseenter', (e) => {
+                // Obtener el texto del tooltip del atributo data-tooltip
+                const tooltipText = button.getAttribute('data-tooltip');
+                tooltip2.textContent = tooltipText;
+                tooltip2.style.display = 'block';
+
+                // Posicionar el tooltip cerca del botón
+                const rect = button.getBoundingClientRect();
+                tooltip2.style.left = `${rect.left + window.scrollX}px`;
+                tooltip2.style.top = `${rect.bottom + window.scrollY + 5}px`; // 5 píxeles debajo del botón
+            });
+
+            button.addEventListener('mousemove', (e) => {
+                // Actualizar la posición del tooltip
+                tooltip2.style.left = `${e.pageX + 10}px`; // Mover 10 píxeles a la derecha del cursor
+                tooltip2.style.top = `${e.pageY + 10}px`; // Mover 10 píxeles abajo del cursor
+            });
+
+            button.addEventListener('mouseleave', () => {
+                tooltip2.style.display = 'none'; // Ocultar el tooltip
+            });
+        });
+   </script>
+</body>
+
+</html>
