@@ -14,11 +14,11 @@ body {
     height: 100vh;
 }
 
-/* Main Container */
+/* Main Container project-list */
 .container {
     width: 90%;
     max-width: 900px;
-    background-color: #12191F;
+    background-color: var(--container-color);
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -28,7 +28,7 @@ body {
 .header {
     padding: 20px;
     border-radius: 10px;
-    color: #2AE8C9;
+    color: var(--company-color);
     text-align: center;
     margin-bottom: 30px;
     position: relative;
@@ -57,7 +57,7 @@ body {
 }
 
 .header .close-option:hover {
-    color: #21c4a9;
+    color: var(--hover-color);
 }
 
 /* Buttons */
@@ -69,9 +69,9 @@ body {
 
 .button {
     background-color: #0D1017;
-    color: #2AE8C9;
+    color: var(--company-color);
     padding: 12px 24px;
-    border: 2px solid #2AE8C9;
+    border: 2px solid var(--company-color);
     border-radius: 8px;
     font-weight: bold;
     font-size: 1em;
@@ -80,7 +80,7 @@ body {
 }
 
 .button:hover {
-    background-color: #26c5ab;
+    background-color: var(--hover-color);
     color: #1a1a1a;
     transform: scale(1.05);
 }
@@ -92,7 +92,7 @@ body {
 
 .recent-projects h2 {
     font-size: 1.5em;
-    color: #2AE8C9;
+    color: var(--company-color);
     margin-bottom: 15px;
     font-weight: 500;
 }
@@ -101,6 +101,33 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 400px;
+}
+
+/* Estilo personalizado para el scrollbar */
+.project-list::-webkit-scrollbar {
+    width: 8px; /* Ancho del scrollbar */
+}
+
+.project-list::-webkit-scrollbar-track {
+    background: transparent; /* Color de la pista del scrollbar */
+}
+
+.project-list::-webkit-scrollbar-thumb {
+    background: #1E222C; /* Color del "pulgar" del scrollbar */
+    border-radius: 4px; /* Bordes redondeados para el "pulgar" */
+    transition: background 0.3s ease; /* Transición suave al cambiar de color */
+    opacity: 0.5;
+}
+
+.project-list::-webkit-scrollbar-thumb:hover {
+    background: #1E222C; /* Color del "pulgar" al pasar el ratón */
+}
+
+.project-list::-webkit-scrollbar-thumb:active {
+    background: #1E222C; /* Color del "pulgar" cuando se está arrastrando */
 }
 
 .project-item {
@@ -111,7 +138,7 @@ body {
     border-radius: 8px;
     transition: background-color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
-    border-left: 4px solid #2AE8C9;
+    border-left: 4px solid var(--company-color);
 }
 
 .project-item:hover {

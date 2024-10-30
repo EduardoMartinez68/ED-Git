@@ -1,0 +1,206 @@
+<style>
+    /* Estilos del botón */
+    .message-balloons-btn {
+        background-color: #26292F;
+        /* Color de fondo del botón */
+        color: #ffffff;
+        /* Color del texto */
+        border: none;
+        /* Sin borde */
+        padding: 10px 20px;
+        /* Espaciado interno */
+        font-size: 16px;
+        /* Tamaño de fuente */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cursor tipo puntero */
+        transition: background 0.3s, transform 0.3s;
+        /* Transiciones suaves */
+    }
+
+    .message-balloons-btn:hover {
+        background-color: #1f2226;
+        /* Color al pasar el ratón */
+        transform: scale(1.05);
+        /* Efecto de aumentar el tamaño */
+    }
+
+    /* Estilos del modal */
+    .message-balloons-modal {
+        display: none;
+        /* Ocultar modal por defecto */
+        position: fixed;
+        /* Fijo en la pantalla */
+        z-index: 1;
+        /* Establecer en la parte superior */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Ancho completo */
+        height: 100%;
+        /* Alto completo */
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Fondo oscuro con transparencia */
+        animation: fadeIn 0.5s;
+        /* Animación de entrada */
+    }
+
+    /* Animación de entrada */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Contenido del modal */
+    .message-balloons-modal-content {
+        background-color: #ffffff;
+        /* Fondo blanco */
+        margin: 10% auto;
+        /* Margen superior */
+        padding: 20px;
+        border-radius: 8px;
+        /* Bordes redondeados */
+        width: 90%;
+        /* Ancho del modal */
+        max-width: 500px;
+        /* Ancho máximo del modal */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        /* Sombra del modal */
+        transform: translateY(-50px);
+        /* Posición inicial para animación */
+        animation: slideIn 0.5s forwards;
+        /* Animación de deslizamiento */
+    }
+
+    /* Animación de deslizamiento */
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Títulos del modal */
+    .message-balloons-modal-title {
+        font-size: 24px;
+        /* Tamaño de fuente */
+        margin-bottom: 10px;
+        /* Espacio inferior */
+        color: #26292F;
+        /* Color del texto */
+        display: flex;
+        /* Para alinear el emoji y el texto */
+        align-items: center;
+        /* Centrar verticalmente el emoji */
+    }
+
+    /* Emoji del modal */
+    .message-balloons-modal-title span {
+        margin-right: 10px;
+        /* Espacio entre el emoji y el texto */
+        font-size: 28px;
+        /* Tamaño del emoji */
+    }
+
+    /* Mensaje del modal */
+    .message-balloons-modal-message {
+        font-size: 16px;
+        /* Tamaño de fuente */
+        margin-bottom: 20px;
+        /* Espacio inferior */
+        color: #555555;
+        /* Color del texto */
+    }
+
+    /* Estilo para el botón de cerrar en el modal */
+    .message-balloons-close {
+        color: #aaa;
+        /* Color del 'x' */
+        float: right;
+        /* Alinear a la derecha */
+        font-size: 28px;
+        /* Tamaño de fuente */
+        font-weight: bold;
+        /* Negrita */
+    }
+
+    .message-balloons-close:hover,
+    .message-balloons-close:focus {
+        color: #000;
+        /* Color al pasar el ratón */
+        text-decoration: none;
+        /* Sin subrayado */
+        cursor: pointer;
+        /* Cursor tipo puntero */
+    }
+</style>
+
+<!-- Modal -->
+<div id="message-balloons-myModal" class="message-balloons-modal">
+    <div class="message-balloons-modal-content">
+        <span class="message-balloons-close">&times;</span>
+        <h2 class="message-balloons-modal-title">
+            <span id="message-balloons-modalEmoji">ℹ️</span> <!-- Emoji predeterminado -->
+            ¡Bienvenido a nuestra Aplicación!
+        </h2>
+        <p class="message-balloons-modal-message">Estamos encantados de tenerte aquí. Explora nuestras características y
+            disfruta de una experiencia única. ¡Haz clic en el botón a continuación para comenzar!</p>
+        <button class="message-balloons-btn message-balloons-btn-close">Empezar</button>
+    </div>
+</div>
+
+<script>
+    // Obtener el modal
+    var modal = document.getElementById("message-balloons-myModal");
+
+    // Obtener el botón que abre el modal
+    var btn = document.getElementById("message-balloons-openModal");
+
+    // Obtener el elemento <span> que cierra el modal
+    var span = document.getElementsByClassName("message-balloons-close")[0];
+
+    // Obtener el botón cerrar en el modal
+    var closeBtn = document.getElementsByClassName("message-balloons-btn-close")[0];
+
+    // Función para abrir el modal con un emoji específico y contenido editable
+    function showMessage(emoji, title, message) {
+        document.getElementById("message-balloons-modalEmoji").textContent = emoji;
+        document.querySelector(".message-balloons-modal-title").textContent = title;
+        document.querySelector(".message-balloons-modal-message").textContent = message;
+        modal.style.display = "block"; // Muestra el modal
+    }
+
+    // Función para abrir el modal con un emoji específico
+    function openModalWithEmoji(emoji) {
+        document.getElementById("message-balloons-modalEmoji").textContent = emoji;
+        modal.style.display = "block";
+    }
+
+
+    // Cuando el usuario hace clic en <span> (x) o en el botón cerrar, cierra el modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    closeBtn.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // Cuando el usuario hace clic en cualquier parte fuera del modal, cierra el modal
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

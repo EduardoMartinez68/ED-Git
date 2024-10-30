@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 import git
 import os
 import time
+import subprocess
 
 app = Flask(__name__)
+folderProgram = "EDCode" 
 
 #--------------------------------------------------------home--------------------------------
 @app.route('/')
@@ -55,6 +57,61 @@ def get_all_the_projects():
     except Exception as e:
         print(f"Error al leer la ruta: {e}")
         return []
+
+
+#--------------------------------------------------------create new project--------------------------------
+@app.route('/form_create_project')
+def form_create_project():
+    userPath = os.path.expanduser("~")
+    return render_template('links/formFolder.html',userPath=userPath)
+
+@app.route('/create_project',methods=['POST'])
+def create_project():
+    folderName = request.form.get('folder_name')
+
+    #get the path of the user
+    userPath = os.path.expanduser("~")
+    pathFolder1 = os.path.join(userPath, folderProgram)
+    pathFolder = os.path.join(pathFolder1, folderName)
+
+    if not os.path.exists(pathFolder):
+        os.makedirs(pathFolder)
+        subprocess.run(["git", "init"], cwd=pathFolder) # create the project Git
+        return redirect(url_for('open_project_path', folder_path=pathFolder))
+    else:
+        print(f"La carpeta '{pathFolder}' ya existe.")
+        return redirect(url_for('form_create_project'))
+
+#--------------------------------------------------------clone project--------------------------------
+@app.route('/form_clone_project')
+def form_clone_project():
+    return render_template('links/formClone.html')
+
+@app.route('/clone_project',methods=['POST'])
+def clone_project():
+    repo_url = request.form.get('linkProject')
+    folderName = request.form.get('folderName')
+
+    #get the path of the user
+    userPath = os.path.expanduser("~")
+    pathFolder1 = os.path.join(userPath, folderProgram)
+    clone_dir = os.path.join(pathFolder1, folderName)
+
+    # Verifica si el directorio ya existe y no está vacío
+    if os.path.exists(clone_dir) and os.listdir(clone_dir):
+        print(f'Error: El directorio {clone_dir} ya existe y no está vacío.')
+        return redirect(url_for('form_clone_project'))
+    else:
+        try:
+            # Clonar el repositorio
+            git.Repo.clone_from(repo_url, clone_dir)
+            print(f'Repositorio clonado en: {clone_dir}')
+            return redirect(url_for('open_project_path', folder_path=clone_dir))
+        except Exception as e:
+            print(f'Ocurrió un error al clonar el repositorio: {e}')
+            return redirect(url_for('form_clone_project'))
+
+
 
 
 

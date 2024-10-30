@@ -1,15 +1,26 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0F1116;
+:root {
+    --company-color: #00F598;
+    /*2AE8C9*/
+    --hover-color: #00c77b;
+    /*21c4a9*/
+    --background-color: #0F1116;
+    --container-color: #12191F;
 }
 
-button:hover{
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+}
+
+button:hover {
     cursor: pointer;
 }
 
-hr{
-    border-top: .25px solid rgba(255, 255, 255, .2); /* Crea una línea fina */
-    height: 0; /* Asegura que no haya altura adicional */
+hr {
+    border-top: .25px solid rgba(255, 255, 255, .2);
+    /* Crea una línea fina */
+    height: 0;
+    /* Asegura que no haya altura adicional */
     margin: 15px 15%;
 }
 
@@ -78,4 +89,113 @@ hr{
 
 .col-12 {
     width: 100%;
+}
+
+
+/*******-------------------------------------------FORM-------------------------------------------******/
+/* Estilos de los campos de entrada */
+.form-group {
+    text-align: left;
+    margin-top: 25px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #b0b0b0;
+    margin-bottom: 5px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #2a2a2a;
+    border: 1px solid #3e3e3e;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 15px;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--company-color);
+    background-color: #333;
+}
+
+/* Botones */
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+button,
+a {
+    width: 48%;
+    padding: 12px;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button-cancel {
+    background-color: #444;
+    color: #ddd;
+}
+
+.button-go {
+    background-color: var(--company-color);
+    color: #1e1e1e;
+}
+
+.button-cancel:hover {
+    background-color: #555;
+    color: #f0f0f0;
+}
+
+.button-go:hover {
+    background-color: var(--hover-color);
+}
+
+.button-group button:active {
+    transform: scale(0.98);
+}
+
+.button-group a:active {
+    transform: scale(0.98);
+}
+
+
+/* Buttons */
+.button-group {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+}
+
+.button {
+    background-color: #0D1017;
+    color: var(--company-color);
+    padding: 12px 24px;
+    border: 2px solid var(--company-color);
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--hover-color);
+    color: #1a1a1a;
+    transform: scale(1.05);
 }
