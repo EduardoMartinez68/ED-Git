@@ -2,3 +2,9 @@
 <link rel="icon" href="{{ url_for('static', filename='img/icon.webp') }}" type="image/x-icon">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 {% include 'partials/alerts.html' %}
+
+
+<!-- Fondo oscuro -->
+<div id="overlay" class="overlay" onclick="closeAllForms()"></div>
+
+<script src="{{ url_for('static', filename='js/formPop.js') }}"></script>

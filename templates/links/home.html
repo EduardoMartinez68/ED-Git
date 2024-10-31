@@ -7,9 +7,14 @@
     {% include 'partials/header.html' %}
 </head>
 <body>
+    <!--this is for that when the user open and close the forms, the path of the folder ED forever is update if the user edit the input path of any form-->
+    <input type="hidden" id="pathFolderED" value="{{ userPath }}">
     <div class="container">
         {% include 'partials/home/navbarHome.html' %}
         {% include 'partials/home/previousProjects.html' %}
+        {% include 'partials/home/formNewProject.html' %}
+        {% include 'partials/home/formCloneProject.html' %}
+        {% include 'partials/home/formOpenProject.html' %}
     </div>
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>

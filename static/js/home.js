@@ -39,3 +39,17 @@ function loadProject() {
 function openProject(projectName) {
     alert("Abriendo " + projectName);
 }
+
+
+function restartAllTheForms(form){
+    //restart the form that close the user
+    toggleForm(form)
+
+    //get the path of the ED folder
+    const pathUser=document.getElementById('pathFolderED').value;
+
+    //we will get all the path input of the form and update
+    document.getElementById('pathOpen').value='';
+    document.getElementById('pathNew').value=pathUser;
+    document.getElementById('pathClone').value=pathUser;
+}

@@ -3,15 +3,52 @@ import git
 import os
 import time
 import subprocess
+from database import *
 
 app = Flask(__name__)
 folderProgram = "EDCode" 
 
+create_database() #when the program start, we will see if exist the database, if not exist we will create
+
 #--------------------------------------------------------home--------------------------------
 @app.route('/')
 def home():
-    folders=get_all_the_projects()
-    return render_template('links/home.html',folders=folders)
+    folders=get_all_the_folders_in_the_database() #get_all_the_projects()
+    foldersInfo=get_the_information_of_the_folders(folders)
+    userPath = get_path_user()
+    return render_template('links/home.html',foldersInfo=foldersInfo,userPath=userPath)
+
+def get_path_user():
+    userPath = os.path.expanduser("~")
+    return os.path.join(userPath, folderProgram)
+
+
+def get_the_information_of_the_folders(folders):
+    # Filter and show only folders
+    folders_info = []
+    for folder in folders:
+        element_path = folder[1] #this is the path
+
+        #Get dates
+        creation_time = os.path.getctime(element_path)  # creation date
+        modification_time = os.path.getmtime(element_path)  #Last modified date
+
+        #Convert timestamp to readable format
+        creation_time = time.ctime(creation_time)
+        modification_time = folder[2]#time.ctime(modification_time)
+
+        # Get folder name from the path
+        folder_name = os.path.basename(element_path)  # Extract the folder name
+
+        #Store information in a dictionary
+        folders_info.append({
+            "name": folder_name,
+            "path": element_path,
+            "creation_time": creation_time,
+            "modification_time": modification_time
+        })
+        
+    return folders_info
 
 def get_all_the_projects():
     #get the path of the user
@@ -60,56 +97,76 @@ def get_all_the_projects():
 
 
 #--------------------------------------------------------create new project--------------------------------
-@app.route('/form_create_project')
-def form_create_project():
-    userPath = os.path.expanduser("~")
-    return render_template('links/formFolder.html',userPath=userPath)
-
 @app.route('/create_project',methods=['POST'])
 def create_project():
+    #get the name folder and the path where we store the product
     folderName = request.form.get('folder_name')
+    pathFolderForm=request.form.get('path')
 
-    #get the path of the user
-    userPath = os.path.expanduser("~")
-    pathFolder1 = os.path.join(userPath, folderProgram)
-    pathFolder = os.path.join(pathFolder1, folderName)
+    #get the new path complete of the user 
+    pathFolder = os.path.join(pathFolderForm, folderName)
 
+    #we will see if exist the folder in the path. If the folder not exist, we will to create
     if not os.path.exists(pathFolder):
         os.makedirs(pathFolder)
         subprocess.run(["git", "init"], cwd=pathFolder) # create the project Git
+
+        save_new_project_in_the_database(pathFolder)
+
         return redirect(url_for('open_project_path', folder_path=pathFolder))
     else:
         print(f"La carpeta '{pathFolder}' ya existe.")
         return redirect(url_for('form_create_project'))
 
 #--------------------------------------------------------clone project--------------------------------
-@app.route('/form_clone_project')
-def form_clone_project():
-    return render_template('links/formClone.html')
-
 @app.route('/clone_project',methods=['POST'])
 def clone_project():
     repo_url = request.form.get('linkProject')
-    folderName = request.form.get('folderName')
 
-    #get the path of the user
-    userPath = os.path.expanduser("~")
-    pathFolder1 = os.path.join(userPath, folderProgram)
-    clone_dir = os.path.join(pathFolder1, folderName)
+    #get the name folder and the path where we store the product
+    folderName = request.form.get('folder_name')
+    pathFolderForm=request.form.get('path')
+
+    #get the new path complete of the user 
+    clone_dir = os.path.join(pathFolderForm, folderName)
 
     # Verifica si el directorio ya existe y no está vacío
     if os.path.exists(clone_dir) and os.listdir(clone_dir):
         print(f'Error: El directorio {clone_dir} ya existe y no está vacío.')
-        return redirect(url_for('form_clone_project'))
+        return redirect(url_for('home'))
     else:
         try:
             # Clonar el repositorio
             git.Repo.clone_from(repo_url, clone_dir)
             print(f'Repositorio clonado en: {clone_dir}')
+            save_new_project_in_the_database(clone_dir)
+
             return redirect(url_for('open_project_path', folder_path=clone_dir))
         except Exception as e:
             print(f'Ocurrió un error al clonar el repositorio: {e}')
-            return redirect(url_for('form_clone_project'))
+            return redirect(url_for('home'))
+
+#--------------------------------------------------------import project--------------------------------
+@app.route('/import_project',methods=['POST'])
+def import_project():
+    path = request.form.get('path')
+
+    #we will see if exist a Git project in this path 
+    if os.path.exists(path):
+        if save_new_project_in_the_database(path): #we will see if can save the path in the database
+            return redirect(url_for('open_project_path', folder_path=path))
+
+    return redirect(url_for('home')) #$if exist a error, return the home
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -129,7 +186,8 @@ can get the data of the folder without restarting the website
 @app.route('/open_project/<path:folder_path>',methods=['GET']) 
 def open_project_path(folder_path):
     dataGitFolder=read_git_folder_in_project(folder_path)
-    return render_template('grap.html',dataGitFolder=dataGitFolder)
+    update_modification_date(folder_path)
+    return render_template('links/tree.html',dataGitFolder=dataGitFolder)
 
 
 def read_git_folder_in_project(repo_path):
