@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git UI Buttons</title>
+    <style>
+        body {
+            background-color: #1b1d23; /* Fondo oscuro */
+            font-family: Arial, sans-serif;
+            color: #e0e0e0; /* Color de texto */
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 300px;
+            margin: auto;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            background-color: #33343b; /* Color de fondo de los botones */
+            color: #e0e0e0; /* Color de texto de los botones */
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            text-align: left;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #454751; /* Color de fondo al pasar el mouse */
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">GitKraken Git GUI</div>
+        <button class="button"><span class="icon">📂</span> Open a repo</button>
+        <button class="button"><span class="icon">🔄</span> Clone a repo</button>
+        <button class="button"><span class="icon">📁</span> Start a local repo</button>
+        <div class="title">Start a hosted repo:</div>
+        <button class="button"><span class="icon">🐙</span> on GitHub</button>
+        <button class="button"><span class="icon">🔧</span> on GitLab</button>
+        <button class="button"><span class="icon">📦</span> on Bitbucket</button>
+        <button class="button"><span class="icon">💻</span> on Azure DevOps</button>
+    </div>
+</body>
+</html>

@@ -9,13 +9,31 @@
 <body>
     <!--this is for that when the user open and close the forms, the path of the folder ED forever is update if the user edit the input path of any form-->
     <input type="hidden" id="pathFolderED" value="{{ userPath }}">
-    <div class="container">
-        {% include 'partials/home/navbarHome.html' %}
-        {% include 'partials/home/previousProjects.html' %}
-        {% include 'partials/home/formNewProject.html' %}
-        {% include 'partials/home/formCloneProject.html' %}
-        {% include 'partials/home/formOpenProject.html' %}
-    </div>
+
+    <br><br><br><br>
+    <center>
+        <img src="{{ url_for('static', filename='img/icon.webp') }}" alt="" class="icon">
+        <h4>Welcome to {ED} GIT</h4>
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    {% include 'partials/home/navbarHome.html' %}
+                </div>
+                <div class="col">
+                    {% include 'partials/home/previousProjects.html' %}
+                </div>
+            </div>
+            <!--this is the forms-->
+            {% include 'partials/home/formNewProject.html' %}
+            {% include 'partials/home/formCloneProject.html' %}
+            {% include 'partials/home/formOpenProject.html' %}
+        </div>
+
+        <br>
+        <label for="" class="description-label">Software created by {ED} Software</label>
+    </center>
+
     <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>
 </html>

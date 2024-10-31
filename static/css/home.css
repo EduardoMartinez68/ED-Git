@@ -6,13 +6,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
 
 /* Main Container project-list */
 .container {
@@ -82,7 +75,6 @@ body {
 .button:hover {
     background-color: var(--hover-color);
     color: #1a1a1a;
-    transform: scale(1.05);
 }
 
 /* Recent Projects */
@@ -180,4 +172,27 @@ body {
         width: 100%;
         text-align: center;
     }
+}
+
+
+.title-text{
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-home{
+    display: block;
+    width: 100%;
+    background-color: #33343b; /* Color de fondo de los botones */
+    color: #e0e0e0; /* Color de texto de los botones */
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    text-align: left;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
