@@ -77,3 +77,24 @@ def get_all_the_folders_in_the_database():
 
     conn.close()
     return folders
+
+def delete_folder_in_database(path):
+    # Connect to database
+    conn = sqlite3.connect('ED_CODE.db')
+    cursor = conn.cursor()
+
+    try:
+        # Run the delete query
+        cursor.execute('''
+            DELETE FROM folders WHERE path = ?
+        ''', (path,))
+        conn.commit()
+
+        # Verificar cuántas filas se eliminaron
+        return cursor.rowcount > 0
+    
+    except sqlite3.Error as e:
+        print(f"Error al eliminar la carpeta: {e}")
+        return False
+    finally:
+        conn.close()

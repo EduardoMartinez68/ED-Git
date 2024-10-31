@@ -29,25 +29,29 @@ def get_the_information_of_the_folders(folders):
     for folder in folders:
         element_path = folder[1] #this is the path
 
-        #Get dates
-        creation_time = os.path.getctime(element_path)  # creation date
-        modification_time = os.path.getmtime(element_path)  #Last modified date
+        #we will see if exist the folder, if exist we will save the information of the folder
+        if os.path.isdir(element_path):
+            #Get dates
+            creation_time = os.path.getctime(element_path)  # creation date
+            modification_time = os.path.getmtime(element_path)  #Last modified date
 
-        #Convert timestamp to readable format
-        creation_time = time.ctime(creation_time)
-        modification_time = folder[2]#time.ctime(modification_time)
+            #Convert timestamp to readable format
+            creation_time = time.ctime(creation_time)
+            modification_time = folder[2]#time.ctime(modification_time)
 
-        # Get folder name from the path
-        folder_name = os.path.basename(element_path)  # Extract the folder name
+            # Get folder name from the path
+            folder_name = os.path.basename(element_path)  # Extract the folder name
 
-        #Store information in a dictionary
-        folders_info.append({
-            "name": folder_name,
-            "path": element_path,
-            "creation_time": creation_time,
-            "modification_time": modification_time
-        })
-        
+            #Store information in a dictionary
+            folders_info.append({
+                "name": folder_name,
+                "path": element_path,
+                "creation_time": creation_time,
+                "modification_time": modification_time
+            })
+        else:
+            delete_folder_in_database(element_path)
+            
     return folders_info
 
 def get_all_the_projects():
@@ -172,24 +176,27 @@ def import_project():
 def create_new_branch():
     folderPath = request.form.get('folderPath') 
     branchName = request.form.get('branchName') 
-    create_new_branch_in_my_project(folderPath,branchName)
-    return redirect(url_for('open_project_path', folder_path=folderPath))
+    if create_new_branch_in_my_project(folderPath,branchName):
+        return redirect(url_for('open_project_path', folder_path=folderPath))
+    else:
+        return redirect(url_for('/home'))
 
 
 def create_new_branch_in_my_project(repo_path, branch_name):
     try:
         # Abre el repositorio
         repo = git.Repo(repo_path)
-        
+
         # Verifica si la rama ya existe
-        if branch_name in repo.branches:
+        branch_exists = any(branch.name == branch_name for branch in repo.branches)
+        if branch_exists:
             print(f"La rama '{branch_name}' ya existe.")
             return False
-        
+
         # Crea una nueva rama y la hace la rama actual
         new_branch = repo.create_head(branch_name)
         new_branch.checkout()  # Cambia a la nueva rama
-        
+
         print(f"La rama '{branch_name}' ha sido creada y ahora estás en ella.")
         return True
 
