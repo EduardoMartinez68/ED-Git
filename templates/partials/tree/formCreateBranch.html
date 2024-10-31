@@ -1,0 +1,23 @@
+<!-- Formularios -->
+<div id="form2" class="form-container">
+    <form action="/create_new_branch" method="post">
+        <div class="form-header">
+            <img src="{{ url_for('static', filename='img/icon.webp') }}" alt="Logo del proyecto">
+            <h3>Create a new Branch</h3>
+            <p>Start a blank project and build your idea from scratch.</p>
+        </div>
+
+        <!--this is for know where the folder is located-->
+        <input type="hidden" name="folderPath" value="{{folder_path}}">
+
+        <div class="form-group">
+            <label for="projectName1">Branch Name:</label>
+            <input type="text" id="projectName1" name="branchName" placeholder="Branch Name" required>
+        </div>
+
+        <div class="button-group">
+            <button onclick="closeAllForms('form2')" class="button-cancel" type="button">Cancel</button>
+            <button class="button-go">Create!</button>
+        </div>
+    </form>
+</div>

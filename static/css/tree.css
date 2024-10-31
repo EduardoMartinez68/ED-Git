@@ -38,6 +38,10 @@
     transition: transform 0.2s ease;
 }
 
+.commit-select{
+    background-color: var(--company-color);
+}
+
 .tooltip {
     position: absolute;
     background-color: #333;
@@ -99,6 +103,16 @@
     cursor: pointer; /* Cambia el cursor a pointer al pasar sobre el botón */
     transition: background-color 0.3s ease; /* Opcional: Añade una transición suave para el color de fondo */
     color: #898E98;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+}
+
+.btn-commits img{
+    width: 15px;
+    height: auto;
+    margin-right: -4px;
 }
 
 .btn-commits:hover {

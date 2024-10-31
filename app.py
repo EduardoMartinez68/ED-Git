@@ -167,10 +167,65 @@ def import_project():
 
 
 
+#------------------------------------------------------create new branch------------------------------
+@app.route('/create_new_branch',methods=['POST'])
+def create_new_branch():
+    folderPath = request.form.get('folderPath') 
+    branchName = request.form.get('branchName') 
+    create_new_branch_in_my_project(folderPath,branchName)
+    return redirect(url_for('open_project_path', folder_path=folderPath))
 
 
+def create_new_branch_in_my_project(repo_path, branch_name):
+    try:
+        # Abre el repositorio
+        repo = git.Repo(repo_path)
+        
+        # Verifica si la rama ya existe
+        if branch_name in repo.branches:
+            print(f"La rama '{branch_name}' ya existe.")
+            return False
+        
+        # Crea una nueva rama y la hace la rama actual
+        new_branch = repo.create_head(branch_name)
+        new_branch.checkout()  # Cambia a la nueva rama
+        
+        print(f"La rama '{branch_name}' ha sido creada y ahora estás en ella.")
+        return True
+
+    except git.exc.InvalidGitRepositoryError:
+        print("Error: La ruta proporcionada no es un repositorio Git válido.")
+        return False
+    except Exception as e:
+        print(f"Ha ocurrido un error: {e}")
+        return False
 
 
+@app.route('/create_new_commit',methods=['POST'])
+def create_new_commit():
+    folderPath = request.form.get('folderPath') 
+    branchName = request.form.get('branchName') 
+    commitMessage=request.form.get('commit') 
+    create_commit(folderPath,branchName,commitMessage)
+    return redirect(url_for('open_project_path', folder_path=folderPath))
+
+def create_commit(repoPath, branchName, commitMessage):
+    try:
+        # Abre el repositorio
+        repo = git.Repo(repoPath)
+
+        # Cambia a la rama especificada
+        repo.git.checkout(branchName)
+
+        # Agrega todos los cambios al área de preparación (staging)
+        repo.git.add(A=True)  # Agrega todos los archivos modificados
+
+        # Crea un nuevo commit
+        repo.index.commit(commitMessage)
+        print(f"Commit creado en la rama '{branchName}' con el mensaje: '{commitMessage}'")
+
+    except Exception as e:
+        print(f"Ocurrió un error al crear el commit: {e}")
 
 #-----------------------------------------------------show the folder--------------------------
 @app.route('/open_project',methods=['POST'])
@@ -187,7 +242,7 @@ can get the data of the folder without restarting the website
 def open_project_path(folder_path):
     dataGitFolder=read_git_folder_in_project(folder_path)
     update_modification_date(folder_path)
-    return render_template('links/tree.html',dataGitFolder=dataGitFolder)
+    return render_template('links/tree.html',dataGitFolder=dataGitFolder,folder_path=folder_path)
 
 
 def read_git_folder_in_project(repo_path):
