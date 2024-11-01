@@ -1,63 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git UI Buttons</title>
+    <title>Terminal</title>
     <style>
-        body {
-            background-color: #1b1d23; /* Fondo oscuro */
-            font-family: Arial, sans-serif;
-            color: #e0e0e0; /* Color de texto */
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 300px;
-            margin: auto;
-        }
-
-        .title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .button {
-            display: block;
+        #terminal {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: monospace;
+            padding: 10px;
             width: 100%;
-            background-color: #33343b; /* Color de fondo de los botones */
-            color: #e0e0e0; /* Color de texto de los botones */
-            border: none;
-            padding: 10px 20px;
-            margin-bottom: 10px;
-            text-align: left;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #454751; /* Color de fondo al pasar el mouse */
-        }
-
-        .icon {
-            margin-right: 10px;
+            height: 300px;
+            border: 1px solid #333;
+            resize: none;
+            overflow-y: auto;
+            outline: none;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">GitKraken Git GUI</div>
-        <button class="button"><span class="icon">📂</span> Open a repo</button>
-        <button class="button"><span class="icon">🔄</span> Clone a repo</button>
-        <button class="button"><span class="icon">📁</span> Start a local repo</button>
-        <div class="title">Start a hosted repo:</div>
-        <button class="button"><span class="icon">🐙</span> on GitHub</button>
-        <button class="button"><span class="icon">🔧</span> on GitLab</button>
-        <button class="button"><span class="icon">📦</span> on Bitbucket</button>
-        <button class="button"><span class="icon">💻</span> on Azure DevOps</button>
-    </div>
+    <div id="terminal" contenteditable="false"></div>
+
+    <script>
+        function printToTerminal(message, color = 'white') {
+            const terminal = document.getElementById('terminal');
+            const coloredMessage = `<span style="color: ${color};">${message}</span><br>`;
+            terminal.innerHTML += coloredMessage;
+            terminal.scrollTop = terminal.scrollHeight; // Auto-scroll
+        }
+
+        // Ejemplos de mensajes con diferentes colores
+        printToTerminal('Mensaje en blanco');
+        printToTerminal('Mensaje en rojo', 'red');
+        printToTerminal('Mensaje en verde', 'green');
+        printToTerminal('Mensaje en amarillo', 'yellow');
+    </script>
 </body>
 </html>

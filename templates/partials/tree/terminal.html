@@ -1,0 +1,44 @@
+<style>
+    #terminal {
+        background-color: var(--background-color);
+        color: #ffffff;
+        font-family: monospace;
+        padding: 10px;
+        width: 80%;
+        height: 300px;
+        border: 1px solid #333;
+        resize: none;
+        overflow-y: auto;
+        outline: none;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        text-align: left;
+    }
+
+    .terminal-label{
+        text-align: left;
+        font-size: .8rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 0 10px 0;
+    }
+</style>
+<label for="" class="terminal-label">Status</label>
+<center>
+    <div id="terminal" contenteditable="false"></div>
+</center>
+<script>
+    function printToTerminal(message, color = 'white') {
+        const terminal = document.getElementById('terminal');
+        const coloredMessage = `<span style="color: ${color};">${message}</span><br>`;
+        terminal.innerHTML += coloredMessage;
+        terminal.scrollTop = terminal.scrollHeight; // Auto-scroll
+    }
+
+    // Ejemplos de mensajes con diferentes colores
+    /*
+    printToTerminal('Mensaje en blanco');
+    printToTerminal('Mensaje en rojo', 'red');
+    printToTerminal('Mensaje en verde', 'green');
+    printToTerminal('Mensaje en amarillo', 'yellow');
+    */
+</script>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import git
 import os
 import time
@@ -176,6 +176,9 @@ def import_project():
 def create_new_branch():
     folderPath = request.form.get('folderPath') 
     branchName = request.form.get('branchName') 
+    branchName = branchName.replace(' ', '_') #this is for that when, we will create the new branch, the space in empty not can create a error in Git 
+
+    #we will see if can create the new branch, else redirect to the user to home 
     if create_new_branch_in_my_project(folderPath,branchName):
         return redirect(url_for('open_project_path', folder_path=folderPath))
     else:
@@ -184,27 +187,27 @@ def create_new_branch():
 
 def create_new_branch_in_my_project(repo_path, branch_name):
     try:
-        # Abre el repositorio
+        # open the repository
         repo = git.Repo(repo_path)
 
-        # Verifica si la rama ya existe
+        # we will see if the branch exist
         branch_exists = any(branch.name == branch_name for branch in repo.branches)
         if branch_exists:
-            print(f"La rama '{branch_name}' ya existe.")
+            print(f"La branch '{branch_name}' exist.")
             return False
 
-        # Crea una nueva rama y la hace la rama actual
+        # create a new branch and that it is the branch current
         new_branch = repo.create_head(branch_name)
-        new_branch.checkout()  # Cambia a la nueva rama
+        new_branch.checkout()  # change to the new branch
 
-        print(f"La rama '{branch_name}' ha sido creada y ahora estás en ella.")
+        print(f"The branch '{branch_name}' has been created and now you are in it.")
         return True
 
     except git.exc.InvalidGitRepositoryError:
-        print("Error: La ruta proporcionada no es un repositorio Git válido.")
+        print("Error: The path provided is not a valid Git repository.")
         return False
     except Exception as e:
-        print(f"Ha ocurrido un error: {e}")
+        print(f"Error in create_new_branch_in_my_project: {e}")
         return False
 
 
@@ -251,7 +254,6 @@ def open_project_path(folder_path):
     update_modification_date(folder_path)
     return render_template('links/tree.html',dataGitFolder=dataGitFolder,folder_path=folder_path)
 
-
 def read_git_folder_in_project(repo_path):
     try:
         repo = git.Repo(repo_path)
@@ -276,6 +278,96 @@ def read_git_folder_in_project(repo_path):
     except Exception as e:
         print(f"Error accessing repository: {e}")
         return {"branches": [], "commits": {}}
+
+'''
+    this is for when the user would like know that files was edit in his project in Git
+'''
+@app.route('/get_changes_of_my_project', methods=['POST'])
+def get_changes_of_my_project():
+    # Get the data from the client
+    data = request.get_json()
+    folder_path = data.get('folderPath')
+
+    try:
+        # Check if the path exists
+        if not os.path.exists(folder_path):
+            return jsonify({"answer": "The specified path does not exist."})
+
+        # Check if there is a Git project in the path
+        repo = git.Repo(folder_path)
+        if repo.bare:
+            return jsonify({"answer": "The specified path is not a valid Git repository."})
+
+        # Get changes in the index (staged files)
+        changed_files = [item.a_path for item in repo.index.diff(None)]
+        
+        # Get committed changes (files in the last commit)
+        try:
+            committed_changes = []
+            if repo.head.is_valid():  # Ensure the HEAD is valid
+                committed_changes = [item.a_path for item in repo.head.commit.diff('HEAD~1')]
+        except Exception as e:
+            committed_changes = []  # No previous changes
+
+        # Get untracked files
+        untracked_files = repo.untracked_files
+
+        # Combine all changes
+        all_changes = changed_files + committed_changes + untracked_files
+        
+        if all_changes:
+            answer = f"" + '\n'.join(all_changes)
+        else:
+            answer = "No changes have been detected."
+
+        return jsonify({"answer": answer})
+
+    except git.GitCommandError as e:
+        return jsonify({"answer": f"A Git error occurred: {str(e)}"})
+    except Exception as e:
+        return jsonify({"answer": f"An error occurred: {str(e)}"})
+    
+def get_changes_of_my_project2():
+    #we will get the data of the client
+    data = request.get_json()
+    folder_path = data.get('folderPath')
+
+    try:
+        #we will see if exist the path
+        if not os.path.exists(folder_path):
+            return jsonify({"answer": "The specified path does not exist."})
+
+        #we will see if exist a project Git in the path
+        repo = git.Repo(folder_path)
+        if repo.bare:
+            return jsonify({"answer": "The specified path is not a valid Git repository."})
+
+        #get the change of the files
+        changed_files = [item.a_path for item in repo.index.diff(None)]
+        
+        #Handle case where there are not enough confirmations
+        try:
+            committed_changes = repo.head.commit.diff('HEAD~1')
+        except Exception as e:
+            committed_changes = []  #There are no previous changes
+
+        all_changes = changed_files + [item.a_path for item in committed_changes]
+
+        if all_changes:
+            answer = f"Modified files: {', '.join(all_changes)}"
+        else:
+            answer = "No changes have been detected."
+
+        return jsonify({"answer": answer})
+
+    except git.GitCommandError as e:
+        return jsonify({"answer": f"A Git error occurred: {str(e)}"})
+    except Exception as e:
+        return jsonify({"answer": f"An error occurred:{str(e)}"})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 #this is for that we get the path of the folder of the git project
 @app.route('/submit', methods=['POST'])

@@ -17,22 +17,24 @@
                 <hr>
                 <div class="row">
                     <div class="col" style="padding-left: .5rem;">
-                        <button class="tooltip-button btn-commits" data-tooltip="Crea una nueva rama" onclick="toggleForm('form2')"><img src="{{ url_for('static', filename='img/icon/1.webp') }}" alt=""></button>
+                        <button class="tooltip-button btn-commits" data-tooltip="Create Branch" onclick="toggleForm('form2')"><img src="{{ url_for('static', filename='img/icon/1.webp') }}" alt=""></button>
                     </div>
                     <div class="col">
-                        <button class="tooltip-button btn-commits" data-tooltip="Crea y guarda un nuevo commit" onclick="toggleForm('form1')"><img src="{{ url_for('static', filename='img/icon/2.webp') }}" alt=""></button>
+                        <button class="tooltip-button btn-commits" data-tooltip="Create and save a new commit" onclick="toggleForm('form1')"><img src="{{ url_for('static', filename='img/icon/2.webp') }}" alt=""></button>
                     </div>
                     <div class="col">
-                        <button class="tooltip-button btn-commits" data-tooltip="Convina 2 commits" onclick="toggleForm('form3')"><img src="{{ url_for('static', filename='img/icon/3.webp') }}" alt=""></button>
+                        <button class="tooltip-button btn-commits" data-tooltip="Combine 2 branches" onclick="toggleForm('form3')"><img src="{{ url_for('static', filename='img/icon/3.webp') }}" alt=""></button>
                     </div>
                     <div class="col">
-                        <button class="tooltip-button btn-commits" data-tooltip="Clona un commit" onclick="toggleForm('form4')"><img src="{{ url_for('static', filename='img/icon/4.webp') }}" alt=""></button>
+                        <button class="tooltip-button btn-commits" data-tooltip="Clone a commit" onclick="toggleForm('form4')"><img src="{{ url_for('static', filename='img/icon/4.webp') }}" alt=""></button>
                     </div>
                     <div class="col">
-                        <button class="tooltip-button btn-commits" data-tooltip="Descarga el proyecto" onclick="toggleForm('form5')"><img src="{{ url_for('static', filename='img/icon/5.webp') }}" alt=""></button>
+                        <button class="tooltip-button btn-commits" data-tooltip="Status Project" id="btnGetChanges"><img src="{{ url_for('static', filename='img/icon/5.webp') }}" alt=""></button>
                     </div>
                 </div>
                 <div id="tooltip-2" class="tooltip-2"></div>
+                <hr>
+                {% include 'partials/tree/terminal.html' %}
             </div>
         </div>
     </div>
@@ -232,3 +234,32 @@
             });
         });
    </script>
+    <script>
+        document.getElementById('btnGetChanges').addEventListener('click', function() {
+            const folderPath = document.getElementById('folder_path').value;
+
+            // show the load screen
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            //Make the POST request to the Flask server
+            fetch('/get_changes_of_my_project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ folderPath: folderPath })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // hidden the screen load
+                document.getElementById('loadingOverlay').style.display = 'none';
+
+                // show the answer of the server
+                printToTerminal('Modified files: ');
+                printToTerminal(data.answer, 'red');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
