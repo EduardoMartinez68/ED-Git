@@ -44,27 +44,27 @@
     <script>
         let commits = [];
         document.addEventListener("DOMContentLoaded", () => {
-                const dataGitFolder = {{ dataGitFolder | tojson}};
+            const dataGitFolder = {{ dataGitFolder | tojson}};
+            
+            const branches = dataGitFolder.branches.map(branch => ({
+                name: branch.toUpperCase(),
+                color: getBranchColor(branch)
+            }));
 
-                const branches = dataGitFolder.branches.map(branch => ({
-                    name: branch.toUpperCase(),
-                    color: getBranchColor(branch)
-                }));
-
-                
-                for (const branchName in dataGitFolder.commits) {
-                    dataGitFolder.commits[branchName].forEach(commit => {
-                        commits.push({
-                            id: commit.hash,
-                            branch: branchName.toUpperCase(),
-                            message: commit.message,
-                            author: commit.author,
-                            date: commit.date
-                        });
+            
+            for (const branchName in dataGitFolder.commits) {
+                dataGitFolder.commits[branchName].forEach(commit => {
+                    commits.push({
+                        id: commit.hash,
+                        branch: branchName.toUpperCase(),
+                        message: commit.message,
+                        author: commit.author,
+                        date: commit.date
                     });
-                }
+                });
+            }
 
-                renderDiagram(branches, commits);
+            renderDiagram(branches, commits);
         });
 
         function getBranchColor(branchName) {
@@ -104,6 +104,12 @@
                     commitElement.classList.add('commit');
                     commitElement.id = commit.id;
                     commitElement.dataset.message = commit.message;
+
+                    //we will see if the commit is of the current branch, regardless of upper or lower case
+                    const currentBranch=document.getElementById('currentBranch').value;
+                    if (commit.branch.toLowerCase() === currentBranch.toLowerCase()){
+                        commitElement.classList.add('current-branch');
+                    }
 
                     // Event listeners para mostrar el tooltip
                     commitElement.addEventListener('mouseenter', (e) => {
@@ -234,6 +240,10 @@
             });
         });
    </script>
+    
+    
+    
+    
     <script>
         document.getElementById('btnGetChanges').addEventListener('click', function() {
             const folderPath = document.getElementById('folder_path').value;

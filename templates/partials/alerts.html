@@ -156,24 +156,43 @@
         </h2>
         <p class="message-balloons-modal-message">Estamos encantados de tenerte aquí. Explora nuestras características y
             disfruta de una experiencia única. ¡Haz clic en el botón a continuación para comenzar!</p>
-        <button class="message-balloons-btn message-balloons-btn-close">Empezar</button>
+        <button class="message-balloons-btn message-balloons-btn-close">Okey</button>
     </div>
 </div>
 
+<!-- 
+    ERROR LINK 
+    this is when i would like show a message of error in the moment of 
+    start the web, for when the server was a error
+ -->
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+ {% if messages %}
+    {% for category, message in messages %}
+        <input type="hidden" value="{{ message }}" id="message-flask-text">
+        <input type="hidden" value="{{ category }}" id="message-flask-category">
+    {% endfor %}
+ {% endif %}
+{% endwith %}
+
+ <!-- END ERROR LINK -->
+
+
+
 <script>
-    // Obtener el modal
+    // Get the modal
     var modal = document.getElementById("message-balloons-myModal");
 
-    // Obtener el botón que abre el modal
+    // Get the button that opens the modal
     var btn = document.getElementById("message-balloons-openModal");
 
-    // Obtener el elemento <span> que cierra el modal
+    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("message-balloons-close")[0];
 
-    // Obtener el botón cerrar en el modal
+    //Get the close button in the modal
     var closeBtn = document.getElementsByClassName("message-balloons-btn-close")[0];
 
-    // Función para abrir el modal con un emoji específico y contenido editable
+    // Feature to open the modal with a specific emoji and editable content
     function showMessage(emoji, title, message) {
         document.getElementById("message-balloons-modalEmoji").textContent = emoji;
         document.querySelector(".message-balloons-modal-title").textContent = title;
@@ -181,14 +200,14 @@
         modal.style.display = "block"; // Muestra el modal
     }
 
-    // Función para abrir el modal con un emoji específico
+    // Function to open the modal with a specific emoji
     function openModalWithEmoji(emoji) {
         document.getElementById("message-balloons-modalEmoji").textContent = emoji;
         modal.style.display = "block";
     }
 
 
-    // Cuando el usuario hace clic en <span> (x) o en el botón cerrar, cierra el modal
+    // When the user clicks the <span> (x) or the close button, it closes the modal
     span.onclick = function () {
         modal.style.display = "none";
     }
@@ -197,10 +216,28 @@
         modal.style.display = "none";
     }
 
-    // Cuando el usuario hace clic en cualquier parte fuera del modal, cierra el modal
+    //When the user clicks anywhere outside the modal, it closes the modal
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
+
+
+
+
+
+    ///-------------------alert error for link-----------------///////////////////
+    /*
+        ERROR LINK 
+        this is when i would like show a message of error in the moment of 
+        start the web, for when the server was a error
+    */
+
+    //we will see if exist a message flask
+    const messageFlask=document.getElementById('message-flask-text')
+    if(messageFlask){
+        const category=document.getElementById('message-flask-category').value
+        showMessage('⚠️', category, messageFlask.value)
     }
 </script>

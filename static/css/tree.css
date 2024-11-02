@@ -38,6 +38,10 @@
     transition: transform 0.2s ease;
 }
 
+.current-branch{
+    background-color: #FFDD40;
+}
+
 .commit-select{
     background-color: var(--company-color);
 }

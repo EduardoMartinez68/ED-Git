@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 import git
+from git import Repo
 import os
 import time
 import subprocess
 from database import *
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'clave_predeterminada_segura')
+
 folderProgram = "EDCode" 
 
 create_database() #when the program start, we will see if exist the database, if not exist we will create
@@ -119,8 +122,8 @@ def create_project():
 
         return redirect(url_for('open_project_path', folder_path=pathFolder))
     else:
-        print(f"La carpeta '{pathFolder}' ya existe.")
-        return redirect(url_for('form_create_project'))
+        flash(f"The folder '{pathFolder}' already exists.", 'error')
+        return redirect(url_for('home'))
 
 #--------------------------------------------------------clone project--------------------------------
 @app.route('/clone_project',methods=['POST'])
@@ -134,20 +137,22 @@ def clone_project():
     #get the new path complete of the user 
     clone_dir = os.path.join(pathFolderForm, folderName)
 
-    # Verifica si el directorio ya existe y no está vacío
+    # Check if the directory already exists and is not empty
     if os.path.exists(clone_dir) and os.listdir(clone_dir):
-        print(f'Error: El directorio {clone_dir} ya existe y no está vacío.')
+        flash(f'Error: The directory {clone_dir} already exists and is not empty.', 'error')
         return redirect(url_for('home'))
     else:
         try:
-            # Clonar el repositorio
+            # Clone el repository
             git.Repo.clone_from(repo_url, clone_dir)
-            print(f'Repositorio clonado en: {clone_dir}')
             save_new_project_in_the_database(clone_dir)
 
+            flash(f"The repository was clone with success", 'success')
             return redirect(url_for('open_project_path', folder_path=clone_dir))
         except Exception as e:
-            print(f'Ocurrió un error al clonar el repositorio: {e}')
+            print(f'An error occurred while cloning the repository: {e}')
+
+            flash(f"An error occurred while cloning the repository", 'error')
             return redirect(url_for('home'))
 
 #--------------------------------------------------------import project--------------------------------
@@ -180,8 +185,10 @@ def create_new_branch():
 
     #we will see if can create the new branch, else redirect to the user to home 
     if create_new_branch_in_my_project(folderPath,branchName):
+        flash(f"The branch '{branchName}' has been created and now you are in it.",'success')
         return redirect(url_for('open_project_path', folder_path=folderPath))
     else:
+        flash(f"The branch '{branchName}' not was create.",'error')
         return redirect(url_for('/home'))
 
 
@@ -199,8 +206,6 @@ def create_new_branch_in_my_project(repo_path, branch_name):
         # create a new branch and that it is the branch current
         new_branch = repo.create_head(branch_name)
         new_branch.checkout()  # change to the new branch
-
-        print(f"The branch '{branch_name}' has been created and now you are in it.")
         return True
 
     except git.exc.InvalidGitRepositoryError:
@@ -251,8 +256,15 @@ can get the data of the folder without restarting the website
 @app.route('/open_project/<path:folder_path>',methods=['GET']) 
 def open_project_path(folder_path):
     dataGitFolder=read_git_folder_in_project(folder_path)
-    update_modification_date(folder_path)
-    return render_template('links/tree.html',dataGitFolder=dataGitFolder,folder_path=folder_path)
+
+    #we will see if can read the git project
+    if dataGitFolder==None:
+        flash('The project could not be imported. Check the path or if it already exists.', 'error')
+        return redirect(url_for('home')) #if the git project not was can be read, show a error
+    else:
+        currentBranch=get_branch_current_of_the_project(folder_path)
+        update_modification_date(folder_path)
+        return render_template('links/tree.html',dataGitFolder=dataGitFolder,currentBranch=currentBranch,folder_path=folder_path)
 
 def read_git_folder_in_project(repo_path):
     try:
@@ -277,7 +289,21 @@ def read_git_folder_in_project(repo_path):
     
     except Exception as e:
         print(f"Error accessing repository: {e}")
-        return {"branches": [], "commits": {}}
+        return None
+
+def get_branch_current_of_the_project(repoPath):
+    repo = Repo(repoPath)
+
+    # Check if the repository is not in a 'detached' state
+    if not repo.bare:
+        currentBranch = repo.active_branch
+        return currentBranch
+    else:
+        print("The repository is in a 'detached' state or is not a valid repository.")
+        return None
+
+
+
 
 '''
     this is for when the user would like know that files was edit in his project in Git
