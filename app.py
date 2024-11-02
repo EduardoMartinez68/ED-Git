@@ -216,31 +216,48 @@ def create_new_branch_in_my_project(repo_path, branch_name):
         return False
 
 
-@app.route('/create_new_commit',methods=['POST'])
-def create_new_commit():
-    folderPath = request.form.get('folderPath') 
+@app.route('/create_a_new_commit',methods=['POST'])
+def create_a_new_commit():
+    pathProject = request.form.get('pathProject') 
     branchName = request.form.get('branchName') 
     commitMessage=request.form.get('commit') 
-    create_commit(folderPath,branchName,commitMessage)
-    return redirect(url_for('open_project_path', folder_path=folderPath))
+
+    #we will see if can create the commit
+    if create_commit(pathProject,branchName,commitMessage):
+        flash(f'The commit was create with success', 'success')
+        return redirect(url_for('open_project_path', folder_path=pathProject))
+    
+    flash(f'The commit not was create', 'error')
+    return redirect(url_for('open_project_path', folder_path=pathProject))
+
 
 def create_commit(repoPath, branchName, commitMessage):
+    print(repoPath)
+    print(branchName)
+    print(commitMessage)
+
     try:
-        # Abre el repositorio
+        # Open the repository
         repo = git.Repo(repoPath)
 
-        # Cambia a la rama especificada
-        repo.git.checkout(branchName)
+        # Check if the branch exists
+        if branchName not in repo.branches:
+            # Create the branch if it doesn't exist
+            repo.git.checkout('-b', branchName)
+        else:
+            # Switch to the existing branch
+            repo.git.checkout(branchName)
 
-        # Agrega todos los cambios al área de preparación (staging)
-        repo.git.add(A=True)  # Agrega todos los archivos modificados
+        # Add all the changes to the staging area
+        repo.git.add(A=True)
 
-        # Crea un nuevo commit
+        # Create a new commit
         repo.index.commit(commitMessage)
-        print(f"Commit creado en la rama '{branchName}' con el mensaje: '{commitMessage}'")
+        return True
 
     except Exception as e:
-        print(f"Ocurrió un error al crear el commit: {e}")
+        print(f"An error occurred while creating the commit create_commit: {e}")
+        return False
 
 #-----------------------------------------------------show the folder--------------------------
 @app.route('/open_project',methods=['POST'])

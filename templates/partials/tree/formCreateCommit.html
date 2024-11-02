@@ -1,8 +1,8 @@
 <!-- Formularios -->
 <div id="form1" class="form-container">
-    <form action="/create_project" method="post">
+    <form action="/create_a_new_commit" method="post">
         <div class="form-header">
-            <img src="{{ url_for('static', filename='img/icon.webp') }}" alt="Logo del proyecto">
+            <img src="{{ url_for('static', filename='img/icon.webp') }}" alt="">
             <h3>Create new Commit</h3>
             <p>Start a blank project and build your idea from scratch.</p>
         </div>
@@ -12,19 +12,19 @@
 
         <div class="form-group">
             <label for="location">Branch:</label>
-            <input type="text" id="pathNew" name="path" placeholder="C:\Projects" required disabled>
+            <input type="text" name="branchName" placeholder="C:\Projects" value="{{currentBranch}}" required readonly>
         </div>
 
         <div class="form-group">
             <label for="projectName1">Commit:</label>
-            <textarea name="" id="" name="folder_name"  placeholder="Ej. Project_A" required> 
+            <textarea id="" name="commit"  placeholder="Ej. Project_A" required> 
 
             </textarea>
         </div>
 
         <div class="button-group">
             <button onclick="closeAllForms('form1')" class="button-cancel" type="button">Cancel</button>
-            <button class="button-go">Create!</button>
+            <button class="button-go">Save!</button>
         </div>
     </form>
 </div>
