@@ -102,8 +102,8 @@ def get_all_the_projects():
         print(f"Error al leer la ruta: {e}")
         return []
 
-
-#--------------------------------------------------------create new project--------------------------------
+#--------------------------------------------------------FORM HOME--------------------------------
+#create new project--------------------------------
 @app.route('/create_project',methods=['POST'])
 def create_project():
     #get the name folder and the path where we store the product
@@ -125,7 +125,7 @@ def create_project():
         flash(f"The folder '{pathFolder}' already exists.", 'error')
         return redirect(url_for('home'))
 
-#--------------------------------------------------------clone project--------------------------------
+#clone project--------------------------------
 @app.route('/clone_project',methods=['POST'])
 def clone_project():
     repo_url = request.form.get('linkProject')
@@ -155,7 +155,7 @@ def clone_project():
             flash(f"An error occurred while cloning the repository", 'error')
             return redirect(url_for('home'))
 
-#--------------------------------------------------------import project--------------------------------
+#import project--------------------------------
 @app.route('/import_project',methods=['POST'])
 def import_project():
     path = request.form.get('path')
@@ -176,7 +176,7 @@ def import_project():
 
 
 
-#------------------------------------------------------create new branch------------------------------
+#------------------------------------------------------create new branch and commit------------------------------
 @app.route('/create_new_branch',methods=['POST'])
 def create_new_branch():
     folderPath = request.form.get('folderPath') 
@@ -321,7 +321,7 @@ def get_branch_current_of_the_project(repoPath):
 
 
 
-
+#-----------------------------------------------------CONSOLE--------------------------
 '''
     this is for when the user would like know that files was edit in his project in Git
 '''
@@ -408,6 +408,15 @@ def get_changes_of_my_project2():
     except Exception as e:
         return jsonify({"answer": f"An error occurred:{str(e)}"})
 
+
+
+
+
+
+
+
+
+#-------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True)
 
