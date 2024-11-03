@@ -259,6 +259,41 @@ def create_commit(repoPath, branchName, commitMessage):
         print(f"An error occurred while creating the commit create_commit: {e}")
         return False
 
+
+
+
+@app.route('/change_branch_of_my_project',methods=['POST'])
+def change_branch_of_my_project():
+    folderPath = request.form.get('folderPath') 
+    branchName=request.form.get('branchName')
+    branchName=branchName.lower() #this is for convert the text of uppercase to lowercase
+
+    #we will see if can create the new branch, else redirect to the user to home 
+    if change_branch(folderPath,branchName):
+        flash(f"You moved to the branch '{branchName}' with success.",'success')
+        return redirect(url_for('open_project_path', folder_path=folderPath))
+    else:
+        flash(f"You can't move to the branch. Try again",'error')
+        return redirect(url_for('open_project_path', folder_path=folderPath))
+
+
+def change_branch(folderPath,branchName):
+    try:
+        # open the repository
+        repo = git.Repo(folderPath)
+
+        # Check if the branch already exists in the repository
+        if branchName in repo.branches:
+            # change to the branch exis
+            repo.git.checkout(branchName)
+        else:
+            # Crea una nueva rama y cambia a ella
+            repo.git.checkout('-b', branchName)
+
+        return True
+    except Exception as e:
+        print(f"An error occurred while switching branches change_branch: {e}")
+        return False 
 #-----------------------------------------------------show the folder--------------------------
 @app.route('/open_project',methods=['POST'])
 def open_project():

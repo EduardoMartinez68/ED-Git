@@ -1,5 +1,30 @@
+<style>
+    .navbar-button-op{
+        background-color: var(--container-color);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 84%;
+        height: 50px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+</style>
 <div class="row">
     <div class="col-1">
         <a href="/" style="color:var(--company-color)">🏠︎ Home</a>
+    </div>
+    <div class="col navbar-op">
+        <div class="navbar-button-op">
+            <button class="tooltip-button btn-commits" data-tooltip="Change Branch"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/change.webp') }}" alt=""></button>
+            <button class="tooltip-button btn-commits" data-tooltip="Upload to your Repository Online"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/upload.webp') }}" alt=""></button>
+            <button class="tooltip-button btn-commits" data-tooltip="Change Branch"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/change.webp') }}" alt=""></button>
+            <button class="tooltip-button btn-commits" data-tooltip="Change Branch"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/change.webp') }}" alt=""></button>
+            <button class="tooltip-button btn-commits" data-tooltip="Change Branch"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/change.webp') }}" alt=""></button>
+            <button class="tooltip-button btn-commits" data-tooltip="Change Branch"  onclick="toggleForm('formChangeBranch')" class="button-go"><img src="{{ url_for('static', filename='img/icon/change.webp') }}" alt=""></button>
+
+        </div>
     </div>
 </div>

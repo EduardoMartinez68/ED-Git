@@ -80,42 +80,71 @@
         }
 
         function renderDiagram(branches, commits) {
+
+            //get the <diagram> and the <tooltip> for show the message of the commit after
             const diagramContainer = document.getElementById('diagram');
             const tooltip = document.getElementById('tooltip');
-
+            
+            //we will read all the branch for draw in the screen
             branches.forEach(branch => {
+                //this is for know if this is the current branch, for use after in the color
+                const currentBranch=document.getElementById('currentBranch').value; //get the name of the current branch
+                let thisIsTheCurrentBranch=branch.name.toLowerCase() === currentBranch.toLowerCase();
+  
+                //----------------we will create the div of the branch and we will add his character----------------
                 const branchContainer = document.createElement('div');
                 branchContainer.classList.add('branch');
                 branchContainer.dataset.branch = branch.name;
 
+                //add the title to the div
                 const branchTitle = document.createElement('div');
                 branchTitle.classList.add('branch-title');
-                branchTitle.style.backgroundColor = branch.color;
+
+                //we will see if the branch is the current branch for show in the screen, else we will draw of white
+                branchTitle.style.backgroundColor = thisIsTheCurrentBranch ? '#FFDD40' : '#AAAAAA';
+
                 branchTitle.textContent = branch.name;
                 branchContainer.appendChild(branchTitle);
+                ///------------------------------------------------------------------------------------------------
 
+                //when the branch not do the current branch, we will add this function
+                //when the use do click in the branch, we will show the show of change of branch
+                if(!thisIsTheCurrentBranch){
+                    branchContainer.addEventListener('click', () => {
+                        //we will get the element of the input of the form for change the branch and update his value with the name of the branch select
+                        document.getElementById('changeBranch').value=branch.name;
+                        toggleForm('formChangeBranch') //show the form
+                    });
+                }
+
+                //get all the commit of the branch for draw after
                 const branchCommits = commits.filter(commit => commit.branch === branch.name);
 
-                // Almacenar los elementos de commit para usarlos después en la conexión
+                // save the element of the commit for that we will use after in the connection 
                 const commitElements = [];
 
+                //we will read all the commit of the branch for draw in screen
                 branchCommits.forEach(commit => {
+                    //----------------we will create the div of the commit and we will add his character----------------
                     const commitElement = document.createElement('div');
                     commitElement.classList.add('commit');
                     commitElement.id = commit.id;
                     commitElement.dataset.message = commit.message;
+                    //--------------------------------
 
-                    //we will see if the commit is of the current branch, regardless of upper or lower case
-                    const currentBranch=document.getElementById('currentBranch').value;
-                    if (commit.branch.toLowerCase() === currentBranch.toLowerCase()){
+                    //we will see if the commit is of the current branch, regardless of upper or lower case                   
+                    if (thisIsTheCurrentBranch){
                         commitElement.classList.add('current-branch');
                     }
 
-                    // Event listeners para mostrar el tooltip
+                    /**
+                        this function is for draw the message of the commit in screen when the user mouse over a commit
+                    **/
+                    //Event listeners for show the el tooltip
                     commitElement.addEventListener('mouseenter', (e) => {
                         tooltip.textContent = commit.message;
                         tooltip.style.display = 'block';
-                        commitElement.style.cursor = 'pointer'; // Cambiar el cursor a pointer
+                        commitElement.style.cursor = 'pointer'; // change the cursor to pointer
                     });
 
                     commitElement.addEventListener('mousemove', (e) => {
@@ -127,20 +156,21 @@
                         tooltip.style.display = 'none';
                     });
 
-                    // Evento de clic para llamar a la función updateDataInTheScreen
+                    //Click event to call functionupdateDataInTheScreen
                     commitElement.addEventListener('click', () => {
                         updateDataInTheScreen(commit.id); //Call the function with the commit ID
                         resetCommitSelect(); //this is for that None commits this selected
                         commitElement.classList.add('commit-select'); //add the class <commit-select> for that the use know the commit that is select
                     });
-
                     branchContainer.appendChild(commitElement);
-                    commitElements.push(commitElement); // Agregar el commit a la lista
+
+
+                    commitElements.push(commitElement); //Add the commit to the list for join them later
                 });
 
                 diagramContainer.appendChild(branchContainer);
 
-                // Conectar los commits de esta rama después de haberlos agregado al DOM
+                //Connect the commits of this branch after they have been added to the DOM
                 for (let i = 0; i < commitElements.length - 1; i++) {
                     connectCommits(commitElements[i], commitElements[i + 1]);
                 }

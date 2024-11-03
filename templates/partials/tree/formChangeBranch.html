@@ -1,0 +1,44 @@
+<div id="formChangeBranch" class="form-container">
+    <form action="/change_branch_of_my_project" method="post">
+
+        <input type="hidden" name="folderPath" value="{{folder_path}}">
+
+        <div class="form-group">
+            <label for="projectName1">Change to the Branch:</label>
+            <input type="text" required id="changeBranch" readonly name="branchName">
+        </div>
+
+        <div class="button-group">
+            <button onclick="closeAllForms('formChangeBranch')" class="button-cancel" type="button">Cancel</button>
+            <button class="button-go">Change!</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- Formularios 
+<div id="formChangeBranch" class="form-container">
+    <form action="/change_branch" method="post">
+        <div class="form-header">
+            <img src="{{ url_for('static', filename='img/icon.webp') }}" alt="Logo del proyecto">
+            <h3>Select a new Branch</h3>
+            <p>Select the new branch to the that you would like move</p>
+        </div>
+
+
+        <input type="hidden" name="folderPath" value="{{folder_path}}">
+
+        <div class="form-group">
+            <label for="projectName1">Branch Name:</label>
+            <select name="" id="">
+                
+            </select>
+        </div>
+
+        <div class="button-group">
+            <button onclick="closeAllForms('formChangeBranch')" class="button-cancel" type="button">Change</button>
+            <button class="button-go">Create!</button>
+        </div>
+    </form>
+</div>
+-->

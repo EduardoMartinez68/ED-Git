@@ -19,6 +19,10 @@
     gap: 10px;
 }
 
+.branch:hover{
+    cursor: pointer;
+}
+
 .branch-title {
     padding: 5px 10px;
     color: white;
